@@ -13,9 +13,13 @@ function App() {
         return api.getInnerSimilarPhotos(imageName)
     }
 
+    function getOuterSimilarPhotos(image: any) {
+        return api.getOuterSimilarPhotos(image)
+    }
+
     return (
         <div className="page">
-            <Main getInnerSimilarPhotos={getInnerSimilarPhotos} getAllPhotos={getAllPhotos} />
+            <Main getInnerSimilarPhotos={getInnerSimilarPhotos} getAllPhotos={getAllPhotos} getOuterSimilarPhotos={getOuterSimilarPhotos} />
         </div>
     )
 }

@@ -22,6 +22,14 @@ class Api {
       .then(this._checkResponse)
   }
 
+  getOuterSimilarPhotos(image: any) {
+    return fetch(this._url + '/similar-photos', {
+      method: 'POST',
+      body: image,
+    })
+      .then(this._checkResponse)
+  }
+
 }
 const api = new Api()
 export default api

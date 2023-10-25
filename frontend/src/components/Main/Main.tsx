@@ -16,7 +16,6 @@ export default function Main(methods: any) {
   const [randomImageName, setRandomImageName] = useState<any>(null)
 
   const onSelect = (evt: any) => {
-    console.log(evt.files[0])
     setFile(evt.files[0])
     setIsVisibleContent(false)
     setImages(null)
@@ -29,7 +28,6 @@ export default function Main(methods: any) {
 
   function handleSubmit(evt: any) {
     evt.preventDefault()
-    console.log('test')
     if (!file && !randomImageName) return;
 
     toast.current.show({ severity: 'info', summary: 'Success', detail: 'Загружаются похожие фото' });
@@ -37,7 +35,20 @@ export default function Main(methods: any) {
     if (randomImageName) {
       methods.getInnerSimilarPhotos(randomImageName)
         .then((data: any) => {
-          console.log(data)
+          setImages(data['image_names'])
+          setIsVisibleContent(true)
+        })
+        .catch((err: any) => {
+          console.log(err)
+        })
+      return
+    }
+
+    if (file) {
+      const formData = new FormData()
+      formData.append('image', file)
+      methods.getOuterSimilarPhotos(formData)
+        .then((data: any) => {
           setImages(data['image_names'])
           setIsVisibleContent(true)
         })
@@ -86,11 +97,11 @@ export default function Main(methods: any) {
 
       {file && (<>
         <h2>Выбранная картинка</h2>
-        <img src={file.objectURL} alt='Картинка цветка' />
+        <img className='curr-img' src={file.objectURL} alt='Картинка цветка' />
       </>)}
       {randomImageName && (<>
         <h2>Выбранная картинка</h2>
-        <img src={require(`../../images/${randomImageName}`)} alt='Картинка цветка' />
+        <img className='curr-img' src={require(`../../images/${randomImageName}`)} alt='Картинка цветка' />
       </>)}
 
 
