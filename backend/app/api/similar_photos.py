@@ -2,11 +2,13 @@ from fastapi import APIRouter, File, UploadFile
 import pandas as pd
 import numpy as np
 import faiss
+from app.core.utils import ModelWrapper
 
 router = APIRouter()
 
 CSV_PATH = 'app/data/all_flowers_2k.csv'
 FAISS_INDEX_PATH = 'app/data/all_flowers_2k.index'
+MODEL_PATH = 'app/models/mobilenet_v2.onnx'
 TOPN = 20
 
 
@@ -18,6 +20,9 @@ df_id.drop(columns=['id'], inplace=True)
 
 
 faiss_index = faiss.read_index(FAISS_INDEX_PATH)
+
+
+model = ModelWrapper(MODEL_PATH)
 
 
 @router.get('/similar-photos/{image_name}')
@@ -43,4 +48,11 @@ async def get_inner_similar_photos(image_name: str):
 @router.post('/similar-photos')
 async def get_similar_photos(image: UploadFile = File(...)):
     print(image)
-    return {'image_names': []}
+    image_byte = await image.read()
+
+    query_vector = model.predict(image_byte)
+    Distances, Indices = faiss_index.search(
+        query_vector.reshape(-1, len(query_vector)), TOPN)
+    indeces = df_index.loc[Indices[0], 'id'] + '.jpg'
+
+    return {'image_names': indeces.tolist()}
