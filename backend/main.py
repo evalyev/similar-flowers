@@ -12,7 +12,6 @@ def start():
         app,
         # host="0.0.0.0",
         # reload=True,
-        # workers=1,
         port=8000,
     )
 

@@ -32,15 +32,12 @@ async def get_inner_similar_photos(image_name: str):
     """
     image_id = image_name.split('.')[0]
     image_index = df_id.loc[image_id, 'index']
-    print(image_index)
     query_vector = faiss_index.reconstruct(int(image_index))
-    print(query_vector)
     Distances, Indices = faiss_index.search(
         query_vector.reshape(-1, len(query_vector)), TOPN)
-    print(Indices)
-    indeces = df_index.loc[Indices[0], 'id']
+    indeces = df_index.loc[Indices[0], 'id'] + '.jpg'
 
-    return indeces
+    return {'image_names': indeces.tolist()}
 
 
 @router.post('/similar-photos')
