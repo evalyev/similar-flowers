@@ -2,7 +2,7 @@ class Api {
   private _url: string
   private _headers: any;
   constructor() {
-    this._url = 'http://localhost:8005'
+    this._url = 'http://localhost:8000'
     // this._headers = config.headers
   }
   _checkResponse(res: any) {
@@ -12,8 +12,13 @@ class Api {
     return Promise.reject(`Ошибка: ${res.status}`);
   }
 
-  getPredictions() {
-    return fetch(this._url + '/predict')
+  getAllPhotos() {
+    return fetch(this._url + '/all-photos')
+      .then(this._checkResponse)
+  }
+
+  getInnerSimilarPhotos(imageName: string) {
+    return fetch(this._url + '/similar-photos/' + imageName)
       .then(this._checkResponse)
   }
 
